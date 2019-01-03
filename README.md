@@ -3,7 +3,7 @@ Serial java client for sending data to server
 
 This program is useful for saving and loading between UART and server
 
-#Instructions of saving
+# Instructions of saving
 
 For using this desktop app you should first send bellow command for saving 
 1-name
@@ -21,6 +21,6 @@ For using this desktop app you should first send bellow command for saving
 
 After sending all of the above commands please send (save) command to saving data to the server and then receive your packet ID
 
-#Instructions of loading
+# Instructions of loading
 
 For loading the game from the game menu select load option and then send (load) command with UART. In the following type the packet ID with your keypad and submit it to receive data by UART from server and sending data to your board like saving instructions.
