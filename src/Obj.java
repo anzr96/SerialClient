@@ -4,16 +4,20 @@ public class Obj {
 	public String name;
 	private String studentID1;
 	private String studentID2;
-	public int score;
-	public int sec, min, hr;
-	public int year, month, day;
-	public int heart;
-	public int level;
+	public String score;
+	public String sec;
+	public String min;
+	public String hr;
+	public String year;
+	public String month;
+	public String day;
+	public String heart;
+	public String level;
 	public Position mainCar;
 	public ArrayList<Position> enemyCars;
-	public int turboCharge;
-	public int speed;
-	public int gameSeconds;
+	public String turboCharge;
+	public String speed;
+	public String gameSeconds;
 
 	Obj() {
 		mainCar = new Position("00", "00");
@@ -44,75 +48,75 @@ public class Obj {
 		this.studentID2 = studentID2;
 	}
 
-	public int getScore() {
+	public String getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(String score) {
 		this.score = score;
 	}
 
-	public int getSec() {
+	public String getSec() {
 		return sec;
 	}
 
-	public void setSec(int sec) {
+	public void setSec(String sec) {
 		this.sec = sec;
 	}
 
-	public int getMin() {
+	public String getMin() {
 		return min;
 	}
 
-	public void setMin(int min) {
+	public void setMin(String min) {
 		this.min = min;
 	}
 
-	public int getHr() {
+	public String getHr() {
 		return hr;
 	}
 
-	public void setHr(int hr) {
+	public void setHr(String hr) {
 		this.hr = hr;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 
-	public void setYear(int year) {
+	public void setYear(String year) {
 		this.year = year;
 	}
 
-	public int getMonth() {
+	public String getMonth() {
 		return month;
 	}
 
-	public void setMonth(int month) {
+	public void setMonth(String month) {
 		this.month = month;
 	}
 
-	public int getDay() {
+	public String getDay() {
 		return day;
 	}
 
-	public void setDay(int day) {
+	public void setDay(String day) {
 		this.day = day;
 	}
 
-	public int getHeart() {
+	public String getHeart() {
 		return heart;
 	}
 
-	public void setHeart(int heart) {
+	public void setHeart(String heart) {
 		this.heart = heart;
 	}
 
-	public int getLevel() {
+	public String getLevel() {
 		return level;
 	}
 
-	public void setLevel(int level) {
+	public void setLevel(String level) {
 		this.level = level;
 	}
 
@@ -132,27 +136,27 @@ public class Obj {
 		this.enemyCars = enemyCars;
 	}
 
-	public int getTurboCharge() {
+	public String getTurboCharge() {
 		return turboCharge;
 	}
 
-	public void setTurboCharge(int turboCharge) {
+	public void setTurboCharge(String turboCharge) {
 		this.turboCharge = turboCharge;
 	}
 
-	public int getSpeed() {
+	public String getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(int speed) {
+	public void setSpeed(String speed) {
 		this.speed = speed;
 	}
 
-	public int getGameSeconds() {
+	public String getGameSeconds() {
 		return gameSeconds;
 	}
 
-	public void setGameSeconds(int gameSeconds) {
+	public void setGameSeconds(String gameSeconds) {
 		this.gameSeconds = gameSeconds;
 	}
 }

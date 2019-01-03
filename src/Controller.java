@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -141,7 +142,8 @@ public class Controller implements Initializable{
          */
         if (receivedData.trim().length() < 6 && receivedData.trim().toLowerCase().contains("save")){
             progress.setProgress(0.5);
-            sendData(new Gson().toJson(Main.obj, Obj.class));
+            //sendData(new Gson().toJson(Main.obj, Obj.class));
+            sendData(createSendingFormat(Main.obj));
             JOptionPane.showMessageDialog(null, "Sending Successful");
             progress.setProgress(0);
             return;
@@ -197,7 +199,7 @@ public class Controller implements Initializable{
             return;
         }
         if (receivedData.length() > 1 && score_arrived){
-            Main.obj.score = Integer.parseInt(receivedData.trim());
+            Main.obj.score = receivedData.trim();
             score_arrived = false;
             return;
         }
@@ -210,7 +212,7 @@ public class Controller implements Initializable{
             return;
         }
         if (receivedData.length() >= 1 && heart_arrived){
-            Main.obj.heart = Integer.parseInt(receivedData.trim());
+            Main.obj.heart = receivedData.trim();
             heart_arrived = false;
             return;
         }
@@ -223,7 +225,7 @@ public class Controller implements Initializable{
             return;
         }
         if (receivedData.length() >= 2 && level_arrived){
-            Main.obj.level = Integer.parseInt(receivedData.trim());
+            Main.obj.level = receivedData.trim();
             level_arrived = false;
             return;
         }
@@ -236,9 +238,9 @@ public class Controller implements Initializable{
             return;
         }
         if (receivedData.length() >= 6 && time_arrived){
-            Main.obj.hr = Integer.parseInt(receivedData.trim().substring(0,2));
-            Main.obj.min = Integer.parseInt(receivedData.trim().substring(2,4));
-            Main.obj.sec = Integer.parseInt(receivedData.trim().substring(4));
+            Main.obj.hr = receivedData.trim().substring(0,2);
+            Main.obj.min = receivedData.trim().substring(2,4);
+            Main.obj.sec = receivedData.trim().substring(4);
             time_arrived = false;
             return;
         }
@@ -251,9 +253,9 @@ public class Controller implements Initializable{
             return;
         }
         if (receivedData.length() >= 6 && date_arrived){
-            Main.obj.year = Integer.parseInt(receivedData.trim().substring(0,2));
-            Main.obj.month = Integer.parseInt(receivedData.trim().substring(2,4));
-            Main.obj.day = Integer.parseInt(receivedData.trim().substring(4));
+            Main.obj.year = receivedData.trim().substring(0,2);
+            Main.obj.month = receivedData.trim().substring(2,4);
+            Main.obj.day = receivedData.trim().substring(4);
             date_arrived = false;
             return;
         }
@@ -266,7 +268,7 @@ public class Controller implements Initializable{
             return;
         }
         if (receivedData.length() >= 2 && turboCharge_Arrived){
-            Main.obj.turboCharge = Integer.parseInt(receivedData.trim());
+            Main.obj.turboCharge = receivedData.trim();
             turboCharge_Arrived = false;
             return;
         }
@@ -279,7 +281,7 @@ public class Controller implements Initializable{
             return;
         }
         if (receivedData.length() >= 2 && speed_arrived){
-            Main.obj.speed = Integer.parseInt(receivedData.trim());
+            Main.obj.speed = receivedData.trim();
             speed_arrived = false;
             return;
         }
@@ -292,7 +294,7 @@ public class Controller implements Initializable{
             return;
         }
         if (receivedData.length() > 1 && gameSeconds_arrived){
-            Main.obj.gameSeconds = Integer.parseInt(receivedData.trim());
+            Main.obj.gameSeconds = receivedData.trim();
             gameSeconds_arrived = false;
             return;
         }
@@ -331,9 +333,10 @@ public class Controller implements Initializable{
         }
     }
 
-    private void sendData(String json){
+    private void sendData(String data){
         try {
-            URL myurl = new URL(Main.server + "/post");
+            URL myurl = new URL(Main.server + "/Micro/upload.php?" + data);
+
             con = (HttpURLConnection) myurl.openConnection();
 
             con.setDoOutput(true);
@@ -343,12 +346,13 @@ public class Controller implements Initializable{
 
             progress.setProgress(0.6);
 
+            /*
             try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
                 wr.write(json.getBytes());
             }catch (Exception e){
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Failed to send data!\n" + e.getMessage());
-            }
+            }*/
 
             StringBuilder content;
 
@@ -472,17 +476,13 @@ public class Controller implements Initializable{
           send time
          */
         send(("time").getBytes());
-        send(("" + (obj.getHr() < 9? "0" + obj.getHr():obj.getHr())
-                 + (obj.getMin() < 9? "0" + obj.getMin():obj.getMin())
-                 + (obj.getSec() < 9? "0" + obj.getSec():obj.getSec())).getBytes());
+        send((obj.getHr() + obj.getMin() + obj.getSec()).getBytes());
 
         /*
           send date
          */
         send(("date").getBytes());
-        send(("" + (obj.getYear() < 9? "0" + obj.getYear():obj.getYear())
-                + (obj.getMonth() < 9? "0" + obj.getMonth():obj.getMonth())
-                + (obj.getDay() < 9? "0" + obj.getDay():obj.getDay())).getBytes());
+        send((obj.getYear() + obj.getMonth() + obj.getDay()).getBytes());
         progress.setProgress(0.9);
 
         /*
@@ -507,5 +507,56 @@ public class Controller implements Initializable{
 
         Main.serialPort.writeBytes(buffer);
 
+    }
+
+    private String createSendingFormat(Obj obj){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        /*name*/
+        stringBuilder.append("name=").append(obj.getName()).append("&");
+
+        /*score*/
+        stringBuilder.append("score=").append(obj.getScore()).append("&");
+
+        /*heart*/
+        stringBuilder.append("heart=").append(obj.getHeart()).append("&");
+
+        /*time*/
+        stringBuilder.append("time=")
+                .append(obj.getHr())
+                .append(obj.getMin())
+                .append(obj.getSec())
+                .append("&");
+
+        /*date*/
+        stringBuilder.append("date=")
+                .append(obj.getYear())
+                .append(obj.getMonth())
+                .append(obj.getDay())
+                .append("&");
+
+        /*turbo*/
+        stringBuilder.append("turbo=").append(obj.getTurboCharge()).append("&");
+
+        /*speed*/
+        stringBuilder.append("speed=").append(obj.getSpeed()).append("&");
+
+        /*game seconds*/
+        stringBuilder.append("gsec=").append(obj.getGameSeconds()).append("&");
+
+        /*main car position*/
+        stringBuilder.append("mcp=")
+                .append(obj.getMainCar().getX())
+                .append(obj.getMainCar().getY())
+                .append("&");
+
+        /*enemy car position*/
+        stringBuilder.append("ecp=");
+        for (Position position : obj.getEnemyCars()) {
+            stringBuilder.append(position.getX()).append(position.getY());
+        }
+        stringBuilder.append("&");
+
+        return stringBuilder.toString();
     }
 }
