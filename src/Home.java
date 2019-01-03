@@ -42,18 +42,18 @@ public class Home implements Initializable {
         File myfile = new File("./data");
 
         Gson gson = new Gson();
-        String json = "";
+        StringBuilder json = new StringBuilder();
         HomeObj homeObj;
 
         try {
             FileInputStream fin = new FileInputStream(myfile);
-            int i=0;
+            int i;
             while((i=fin.read())!=-1){
-                json += (char)i;
+                json.append((char) i);
                 System.out.print((char)i);
             }
             fin.close();
-            homeObj = gson.fromJson(json, HomeObj.class);
+            homeObj = gson.fromJson(json.toString(), HomeObj.class);
         } catch (IOException e) {
             e.printStackTrace();
             homeObj = new HomeObj();
@@ -123,6 +123,7 @@ public class Home implements Initializable {
                     try {
                         Main.obj.setStudentID1(sid1.getText());
                         Main.sid1 = sid1.getText();
+                        homeObj.setStudentID1(sid1.getText());
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -130,6 +131,7 @@ public class Home implements Initializable {
                     try {
                         Main.obj.setStudentID2(sid2.getText());
                         Main.sid2 = sid2.getText();
+                        homeObj.setStudentID2(sid2.getText());
                     }catch (Exception e){
                         e.printStackTrace();
                     }

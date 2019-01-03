@@ -5,10 +5,10 @@ public class HomeObj {
     private Integer data;
     private Integer stop;
     private String parity;
-    private Integer studentID1;
-    private Integer studentID2;
+    private String studentID1;
+    private String studentID2;
 
-    public HomeObj() {
+    HomeObj() {
         server = "localhost";
         port = "COM10";
         baud = 115200;
@@ -65,19 +65,19 @@ public class HomeObj {
         this.parity = parity;
     }
 
-    public Integer getStudentID1() {
+    public String getStudentID1() {
         return studentID1;
     }
 
-    public void setStudentID1(Integer studentID1) {
+    public void setStudentID1(String studentID1) {
         this.studentID1 = studentID1;
     }
 
-    public Integer getStudentID2() {
+    public String getStudentID2() {
         return studentID2;
     }
 
-    public void setStudentID2(Integer studentID2) {
+    public void setStudentID2(String studentID2) {
         this.studentID2 = studentID2;
     }
 }

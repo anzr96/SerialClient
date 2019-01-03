@@ -1,9 +1,8 @@
 import java.util.ArrayList;
 
 public class Obj {
-	public String name;
-	private String studentID1;
-	private String studentID2;
+	public String studentID1;
+	public String studentID2;
 	public String score;
 	public String sec;
 	public String min;
@@ -22,14 +21,6 @@ public class Obj {
 	Obj() {
 		mainCar = new Position("00", "00");
 		enemyCars = new ArrayList<>();
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getStudentID1() {

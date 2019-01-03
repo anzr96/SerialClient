@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import com.sun.istack.internal.NotNull;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -67,7 +68,7 @@ public class Controller implements Initializable{
 
     private static HttpURLConnection con;
 
-    private Boolean name_arrived = false, score_arrived = false, time_arrived = false,
+    private Boolean score_arrived = false, time_arrived = false,
             date_arrived = false, heart_arrived = false, level_arrived = false,
             position_main_car_arrived = false, position_enemy_car_arrived = false,
             turboCharge_Arrived = false, speed_arrived = false, gameSeconds_arrived = false,
@@ -93,7 +94,7 @@ public class Controller implements Initializable{
             }catch (Exception e){
                 e.printStackTrace();
 
-                name_arrived = false; score_arrived = false; time_arrived = false;
+                score_arrived = false; time_arrived = false;
                 date_arrived = false; heart_arrived = false; level_arrived = false;
                 position_main_car_arrived = false; position_enemy_car_arrived = false;
                 turboCharge_Arrived = false; speed_arrived = false; gameSeconds_arrived = false;
@@ -106,7 +107,7 @@ public class Controller implements Initializable{
     }
 
     private void loadScene(){
-        name.setText(Main.obj.name);
+        name.setText(Main.obj.studentID1 + "-" + Main.obj.studentID2);
         score.setText(Main.obj.score + "");
         heart.setText(Main.obj.heart + "");
         level.setText(Main.obj.level + "");
@@ -133,18 +134,23 @@ public class Controller implements Initializable{
     }
 
     private void parseBuffer(String receivedData){
-        if (receivedData.length() > 10 && !position_enemy_car_arrived)
+        if (receivedData.length() > 10)
             return;
-        textArea.appendText(receivedData);
+        textArea.appendText(receivedData + "\n");
 
         /*
           save command
          */
-        if (receivedData.trim().length() < 6 && receivedData.trim().toLowerCase().contains("save")){
+        if (receivedData.trim().contains("save")){
+            System.out.println("sss");
             progress.setProgress(0.5);
             //sendData(new Gson().toJson(Main.obj, Obj.class));
-            sendData(createSendingFormat(Main.obj));
-            JOptionPane.showMessageDialog(null, "Sending Successful");
+            if(sendData(createSendingFormat(Main.obj))){
+                JOptionPane.showMessageDialog(null, "Sending Successful");
+            }else {
+                JOptionPane.showMessageDialog(null, "Sending Unsuccessful");
+            }
+
             progress.setProgress(0);
             return;
         }
@@ -152,7 +158,7 @@ public class Controller implements Initializable{
         /*
           load command
          */
-        if (receivedData.trim().length() < 6 && receivedData.trim().toLowerCase().contains("load")){
+        if (receivedData.trim().length() < 6 && receivedData.trim().contains("load")){
             load_command = true;
             return;
         }
@@ -179,22 +185,9 @@ public class Controller implements Initializable{
         }
 
         /*
-         name arrived
-         */
-        if (receivedData.trim().toLowerCase().contains("name")){
-            name_arrived = true;
-            return;
-        }
-        if (receivedData.length() > 1 && name_arrived){
-            Main.obj.name = receivedData.trim();
-            name_arrived = false;
-            return;
-        }
-
-        /*
           score arrived
          */
-        if (receivedData.trim().toLowerCase().contains("score")){
+        if (receivedData.trim().contains("score")){
             score_arrived = true;
             return;
         }
@@ -207,7 +200,7 @@ public class Controller implements Initializable{
         /*
           heart arrived
          */
-        if (receivedData.trim().toLowerCase().contains("heart")){
+        if (receivedData.trim().contains("heart")){
             heart_arrived = true;
             return;
         }
@@ -220,7 +213,7 @@ public class Controller implements Initializable{
         /*
           level arrived
          */
-        if (receivedData.trim().toLowerCase().contains("level")){
+        if (receivedData.trim().contains("level")){
             level_arrived = true;
             return;
         }
@@ -233,7 +226,7 @@ public class Controller implements Initializable{
         /*
           time arrived
          */
-        if (receivedData.trim().toLowerCase().contains("time")){
+        if (receivedData.trim().contains("time")){
             time_arrived = true;
             return;
         }
@@ -248,7 +241,7 @@ public class Controller implements Initializable{
         /*
           date arrived
          */
-        if (receivedData.trim().toLowerCase().contains("date")){
+        if (receivedData.trim().contains("date")){
             date_arrived = true;
             return;
         }
@@ -263,7 +256,7 @@ public class Controller implements Initializable{
         /*
           turbo charge arrived
          */
-        if (receivedData.trim().toLowerCase().contains("turbo")){
+        if (receivedData.trim().contains("turbo")){
             turboCharge_Arrived = true;
             return;
         }
@@ -276,7 +269,7 @@ public class Controller implements Initializable{
         /*
           speed arrived
          */
-        if (receivedData.trim().toLowerCase().contains("speed")){
+        if (receivedData.trim().contains("speed")){
             speed_arrived = true;
             return;
         }
@@ -289,7 +282,7 @@ public class Controller implements Initializable{
         /*
           game seconds arrived
          */
-        if (receivedData.trim().toLowerCase().contains("gsec")){
+        if (receivedData.trim().contains("gsec")){
             gameSeconds_arrived = true;
             return;
         }
@@ -302,7 +295,7 @@ public class Controller implements Initializable{
         /*
           main car position arrived
          */
-        if (receivedData.trim().toLowerCase().contains("mcp")){
+        if (receivedData.trim().contains("mcp")){
             position_main_car_arrived = true;
             return;
         }
@@ -316,7 +309,7 @@ public class Controller implements Initializable{
         /*
           enemy position's arrived
          */
-        if (receivedData.trim().toLowerCase().contains("ecp")){
+        if (receivedData.trim().contains("ecp")){
             position_enemy_car_arrived = true;
             return;
         }
@@ -333,7 +326,7 @@ public class Controller implements Initializable{
         }
     }
 
-    private void sendData(String data){
+    private boolean sendData(String data){
         try {
             URL myurl = new URL(Main.server + "/Micro/upload.php?" + data);
 
@@ -354,7 +347,7 @@ public class Controller implements Initializable{
                 JOptionPane.showMessageDialog(null, "Failed to send data!\n" + e.getMessage());
             }*/
 
-            StringBuilder content;
+            /*StringBuilder content;
 
             try (BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()))) {
@@ -375,13 +368,15 @@ public class Controller implements Initializable{
 
             System.out.println(content.toString());
 
-            JOptionPane.showMessageDialog(null, "Your packet ID: " + content.toString());
+            JOptionPane.showMessageDialog(null, "Your packet ID: " + content.toString());*/
 
+            con.disconnect();
+            return true;
         }catch (Exception e){
             e.printStackTrace();
             progress.setProgress(0);
-        }finally {
             con.disconnect();
+            return false;
         }
     }
 
@@ -428,11 +423,6 @@ public class Controller implements Initializable{
     }
 
     private void sendSerial(Obj obj) throws SerialPortException {
-        /*
-          send name
-         */
-        send(("name").getBytes());
-        send(obj.getName().getBytes());
 
         /*
           send heart
@@ -512,9 +502,6 @@ public class Controller implements Initializable{
     private String createSendingFormat(Obj obj){
         StringBuilder stringBuilder = new StringBuilder();
 
-        /*name*/
-        stringBuilder.append("name=").append(obj.getName()).append("&");
-
         /*score*/
         stringBuilder.append("score=").append(obj.getScore()).append("&");
 
@@ -555,7 +542,9 @@ public class Controller implements Initializable{
         for (Position position : obj.getEnemyCars()) {
             stringBuilder.append(position.getX()).append(position.getY());
         }
-        stringBuilder.append("&");
+        if (obj.getEnemyCars().isEmpty()){
+            stringBuilder.append("0000");
+        }
 
         return stringBuilder.toString();
     }
