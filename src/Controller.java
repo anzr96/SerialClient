@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -135,8 +136,8 @@ public class Controller implements Initializable{
             return;
         textArea.appendText(receivedData);
 
-        /**
-         * save command
+        /*
+          save command
          */
         if (receivedData.trim().length() < 6 && receivedData.trim().toLowerCase().contains("save")){
             progress.setProgress(0.5);
@@ -146,8 +147,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * load command
+        /*
+          load command
          */
         if (receivedData.trim().length() < 6 && receivedData.trim().toLowerCase().contains("load")){
             load_command = true;
@@ -175,8 +176,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         *name arrived
+        /*
+         name arrived
          */
         if (receivedData.trim().toLowerCase().contains("name")){
             name_arrived = true;
@@ -188,8 +189,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * score arrived
+        /*
+          score arrived
          */
         if (receivedData.trim().toLowerCase().contains("score")){
             score_arrived = true;
@@ -201,8 +202,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * heart arrived
+        /*
+          heart arrived
          */
         if (receivedData.trim().toLowerCase().contains("heart")){
             heart_arrived = true;
@@ -214,8 +215,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * level arrived
+        /*
+          level arrived
          */
         if (receivedData.trim().toLowerCase().contains("level")){
             level_arrived = true;
@@ -227,8 +228,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * time arrived
+        /*
+          time arrived
          */
         if (receivedData.trim().toLowerCase().contains("time")){
             time_arrived = true;
@@ -242,8 +243,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * date arrived
+        /*
+          date arrived
          */
         if (receivedData.trim().toLowerCase().contains("date")){
             date_arrived = true;
@@ -257,8 +258,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * turbo charge arrived
+        /*
+          turbo charge arrived
          */
         if (receivedData.trim().toLowerCase().contains("turbo")){
             turboCharge_Arrived = true;
@@ -270,8 +271,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * speed arrived
+        /*
+          speed arrived
          */
         if (receivedData.trim().toLowerCase().contains("speed")){
             speed_arrived = true;
@@ -283,8 +284,8 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * game seconds arrived
+        /*
+          game seconds arrived
          */
         if (receivedData.trim().toLowerCase().contains("gsec")){
             gameSeconds_arrived = true;
@@ -296,22 +297,22 @@ public class Controller implements Initializable{
             return;
         }
 
-        /**
-         * main car position arrived
+        /*
+          main car position arrived
          */
         if (receivedData.trim().toLowerCase().contains("mcp")){
             position_main_car_arrived = true;
             return;
         }
         if (receivedData.length() >= 4 && position_main_car_arrived){
-            Main.obj.mainCar.x = Integer.parseInt(receivedData.trim().substring(0,2));
-            Main.obj.mainCar.y = Integer.parseInt(receivedData.trim().substring(2,4));
+            Main.obj.mainCar.x = receivedData.trim().substring(0,2);
+            Main.obj.mainCar.y = receivedData.trim().substring(2,4);
             position_main_car_arrived = false;
             return;
         }
 
-        /**
-         * enemy position's arrived
+        /*
+          enemy position's arrived
          */
         if (receivedData.trim().toLowerCase().contains("ecp")){
             position_enemy_car_arrived = true;
@@ -320,14 +321,13 @@ public class Controller implements Initializable{
         if (receivedData.length() > 4 && position_enemy_car_arrived){
             if (receivedData.length() % 4 == 0){
                 for (int i = 0; i < receivedData.length(); i = i + 4){
-                    Position position = new Position(Integer.parseInt(receivedData.trim().substring(i, i + 2)),
-                            Integer.parseInt(receivedData.trim().substring(i + 2, i + 4)));
+                    Position position = new Position(receivedData.trim().substring(i, i + 2),
+                            receivedData.trim().substring(i + 2, i + 4));
                     Main.obj.enemyCars.add(position);
                 }
             }
 
             position_enemy_car_arrived = false;
-            return;
         }
     }
 
@@ -345,6 +345,9 @@ public class Controller implements Initializable{
 
             try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
                 wr.write(json.getBytes());
+            }catch (Exception e){
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Failed to send data!\n" + e.getMessage());
             }
 
             StringBuilder content;
@@ -368,13 +371,13 @@ public class Controller implements Initializable{
 
             System.out.println(content.toString());
 
+            JOptionPane.showMessageDialog(null, "Your packet ID: " + content.toString());
+
         }catch (Exception e){
             e.printStackTrace();
             progress.setProgress(0);
         }finally {
-
             con.disconnect();
-
         }
     }
 
@@ -421,60 +424,60 @@ public class Controller implements Initializable{
     }
 
     private void sendSerial(Obj obj) throws SerialPortException {
-        /**
-         * send name
+        /*
+          send name
          */
         send(("name").getBytes());
         send(obj.getName().getBytes());
 
-        /**
-         * send heart
+        /*
+          send heart
          */
         send(("heart").getBytes());
         send((obj.getHeart() + "").getBytes());
 
-        /**
-         * send level
+        /*
+          send level
          */
         send(("level").getBytes());
         send((obj.getLevel() + "").getBytes());
         progress.setProgress(0.7);
 
-        /**
-         * send score
+        /*
+          send score
          */
         send(("score").getBytes());
         send((obj.getScore() + "").getBytes());
 
-        /**
-         * send turbo charge
+        /*
+          send turbo charge
          */
         send(("turbo").getBytes());
         send((obj.getTurboCharge() + "").getBytes());
 
-        /**
-         * send speed
+        /*
+          send speed
          */
         send(("speed").getBytes());
         send((obj.getSpeed() + "").getBytes());
         progress.setProgress(0.8);
 
-        /**
-         * send game second
+        /*
+          send game second
          */
         send(("gsec").getBytes());
         send((obj.getGameSeconds() + "").getBytes());
 
-        /**
-         * send time
+        /*
+          send time
          */
         send(("time").getBytes());
         send(("" + (obj.getHr() < 9? "0" + obj.getHr():obj.getHr())
                  + (obj.getMin() < 9? "0" + obj.getMin():obj.getMin())
                  + (obj.getSec() < 9? "0" + obj.getSec():obj.getSec())).getBytes());
 
-        /**
-         * send date
+        /*
+          send date
          */
         send(("date").getBytes());
         send(("" + (obj.getYear() < 9? "0" + obj.getYear():obj.getYear())
@@ -482,23 +485,21 @@ public class Controller implements Initializable{
                 + (obj.getDay() < 9? "0" + obj.getDay():obj.getDay())).getBytes());
         progress.setProgress(0.9);
 
-        /**
-         * send main car position
+        /*
+          send main car position
          */
         send(("mcp").getBytes());
-        send(("" + (obj.getMainCar().getX() < 9? "0" + obj.getMainCar().getX():obj.getMainCar().getX())
-                + (obj.getMainCar().getY() < 9? "0" + obj.getMainCar().getY():obj.getMainCar().getY())).getBytes());
+        send((obj.getMainCar().getX() + obj.getMainCar().getY()).getBytes());
 
-        /**
-         * send enemy car position
+        /*
+          send enemy car position
          */
         send(("ecp").getBytes());
-        String enemy = "";
+        StringBuilder enemy = new StringBuilder();
         for (Position position : obj.getEnemyCars()) {
-            enemy += position.getX() < 9? "0" + position.getX(): position.getX()
-                    + position.getY() < 9? "0" + position.getY(): position.getY();
+            enemy.append(position.getX()).append(position.getY());
         }
-        send(enemy.getBytes());
+        send(enemy.toString().getBytes());
         progress.setProgress(1);
     }
 

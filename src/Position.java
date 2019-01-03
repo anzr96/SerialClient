@@ -1,24 +1,24 @@
 public class Position {
-    public int x, y;
+    public String x, y;
 
-    public Position(int x, int y) {
+    public Position(String x, String y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public String getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(String x) {
         this.x = x;
     }
 
-    public int getY() {
+    public String getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(String y) {
         this.y = y;
     }
 }

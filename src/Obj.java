@@ -2,8 +2,8 @@ import java.util.ArrayList;
 
 public class Obj {
 	public String name;
-	public String studentID1;
-	public String studentID2;
+	private String studentID1;
+	private String studentID2;
 	public int score;
 	public int sec, min, hr;
 	public int year, month, day;
@@ -15,8 +15,8 @@ public class Obj {
 	public int speed;
 	public int gameSeconds;
 
-	public Obj() {
-		mainCar = new Position(0, 0);
+	Obj() {
+		mainCar = new Position("00", "00");
 		enemyCars = new ArrayList<>();
 	}
 
