@@ -13,6 +13,8 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import javax.swing.*;
 import java.io.BufferedReader;
@@ -197,7 +199,12 @@ public class Controller implements Initializable{
         if (receivedData.length() > 1 && load_command){
             try {
                 progress.setProgress(0.1);
-                Main.obj = new Gson().fromJson(getData(receivedData.trim()), Obj.class);
+                Main.obj = jsonParser(getData(receivedData.trim()));
+                if (Main.obj == null){
+                    JOptionPane.showMessageDialog(null, "Problem in received data");
+                    progress.setProgress(0);
+                    return;
+                }
                 progress.setProgress(0.6);
             }catch (Exception e){
                 e.printStackTrace();
@@ -364,46 +371,19 @@ public class Controller implements Initializable{
 
             con = (HttpURLConnection) myurl.openConnection();
 
-            con.setDoOutput(true);
             con.setRequestMethod("POST");
             con.setRequestProperty("User-Agent", "Java client");
             con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
             progress.setProgress(0.6);
-
-            /*
-            try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-                wr.write(json.getBytes());
-            }catch (Exception e){
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Failed to send data!\n" + e.getMessage());
-            }*/
-
-            /*StringBuilder content;
-
-            try (BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()))) {
-
-                String line;
-                content = new StringBuilder();
-
-                double i = 1;
-
-                while ((line = in.readLine()) != null) {
-                    progress.setProgress(0.6 + i / 100);
-                    i++;
-                    content.append(line);
-                    content.append(System.lineSeparator());
-                }
-                progress.setProgress(0.9);
+            if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                progress.setProgress(1);
+                con.disconnect();
+                return true;
+            }else {
+                progress.setProgress(0);
+                con.disconnect();
+                return false;
             }
-
-            System.out.println(content.toString());
-
-            JOptionPane.showMessageDialog(null, "Your packet ID: " + content.toString());*/
-
-            con.disconnect();
-            return true;
         }catch (Exception e){
             e.printStackTrace();
             progress.setProgress(0);
@@ -412,9 +392,15 @@ public class Controller implements Initializable{
         }
     }
 
-    private String getData(String id){
-        String url = Main.server + "/" + id;
-        StringBuilder content = new StringBuilder();
+    private String getData(String uploadID){
+        String tempSID = Main.obj.studentID1;
+        if (!(Main.obj.studentID2.equals("null") || Main.obj.studentID2 == null))
+            tempSID = tempSID + "-" + Main.obj.studentID2;
+        String studentID = JOptionPane.showInputDialog("Please enter your studentID's", tempSID);
+        if (studentID == null || studentID.equals(""))
+            studentID = Main.obj.studentID1 + "-" + Main.obj.studentID2;
+        String url = Main.server + "/Micro/rawlist.php?" + "studentID=" + studentID + "&uploadID=" + uploadID;
+        StringBuilder content;
 
         try {
 
@@ -441,17 +427,61 @@ public class Controller implements Initializable{
 
             progress.setProgress(0.45);
 
-            System.out.println(content.toString());
-
         }catch (Exception e){
             e.printStackTrace();
             progress.setProgress(0);
+            return null;
         } finally {
 
             con.disconnect();
         }
 
         return content.toString();
+    }
+
+    private Obj jsonParser(String jsonStr){
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject;
+        try {
+            jsonObject = (JSONObject) jsonParser.parse(jsonStr);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+        Obj obj = Main.obj;
+        obj.setUploadID((String) jsonObject.get("UploadID"));
+        obj.setScore((String) jsonObject.get("Score"));
+        obj.setHeart((String) jsonObject.get("Heart"));
+        obj.setLevel((String) jsonObject.get("Level"));
+        obj.setSpeed((String) jsonObject.get("Speed"));
+        obj.setTurboCharge((String) jsonObject.get("Turbo"));
+        obj.setGameSeconds((String) jsonObject.get("gsec"));
+
+        String s = (String) jsonObject.get("Time");
+        obj.setHr(s.substring(0,2));
+        obj.setMin(s.substring(2,4));
+        obj.setSec(s.substring(4));
+
+        s = (String) jsonObject.get("Date");
+        obj.setYear(s.substring(0,2));
+        obj.setMonth(s.substring(2,4));
+        obj.setDay(s.substring(4));
+
+        s = (String) jsonObject.get("MainCarPos");
+        obj.setMainCar(new Position(s.substring(0,2), s.substring(2)));
+
+        s = (String) jsonObject.get("EnemyCarPos");
+        ArrayList<Position> positions = new ArrayList<>();
+        for (int i = 0; i < s.length(); i += 4){
+            String tmp = s.substring(i, i + 4);
+            Position position = new Position(tmp.substring(0,2), tmp.substring(2));
+            positions.add(position);
+        }
+
+        obj.setEnemyCars(positions);
+
+        return obj;
     }
 
     private void sendSerial(Obj obj) throws SerialPortException {

@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -6,8 +8,14 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.LinkedList;
 

@@ -6,7 +6,6 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/gson-2.6.2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/jssc-2.8.0.jar" path-in-jar="/" />
       <element id="artifact" artifact-name="JavaFXApp" />
-      <element id="library" level="project" name="lib" />
     </root>
   </artifact>
 </component>
