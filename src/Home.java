@@ -58,6 +58,7 @@ public class Home implements Initializable {
             e.printStackTrace();
             homeObj = new HomeObj();
         }
+        System.out.println("");
 
         server.setText(homeObj.getServer());
         port.setText(homeObj.getPort());

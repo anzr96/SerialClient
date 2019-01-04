@@ -9,7 +9,7 @@ public class HomeObj {
     private String studentID2;
 
     HomeObj() {
-        server = "localhost";
+        server = "http://majiid.ir";
         port = "COM10";
         baud = 115200;
         data = 8;

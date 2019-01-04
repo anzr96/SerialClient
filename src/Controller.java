@@ -1,32 +1,23 @@
-import com.google.gson.Gson;
-import com.sun.istack.internal.NotNull;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.util.Duration;
 import jssc.SerialPort;
-import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
-import java.util.Timer;
-import java.util.concurrent.*;
 
 public class Controller implements Initializable{
     @FXML
@@ -62,9 +53,9 @@ public class Controller implements Initializable{
     @FXML
     private Label mainy;
     @FXML
-    private Label enemyx1;
+    private TextArea enemyx;
     @FXML
-    private Label enemyy1;
+    private TextArea enemyy;
     @FXML
     private TextArea textArea;
 
@@ -126,12 +117,14 @@ public class Controller implements Initializable{
         mainy.setText(Main.obj.mainCar.y + "");
 
 
+        enemyx.clear();
+        enemyy.clear();
         for (Position enemyCar : Main.obj.enemyCars) {
             Label label = new Label();
             label.setLayoutX(0);
             label.setLayoutY(0);
-            enemyx1.setText(enemyCar.x + "");
-            enemyy1.setText(enemyCar.y + "");
+            enemyx.appendText(enemyCar.x + "\n");
+            enemyy.appendText(enemyCar.y + "\n");
         }
     }
 
@@ -178,7 +171,6 @@ public class Controller implements Initializable{
          */
         if (receivedData.trim().contains("save")){
             progress.setProgress(0.5);
-            //sendData(new Gson().toJson(Main.obj, Obj.class));
             if(sendData(createSendingFormat(Main.obj))){
                 JOptionPane.showMessageDialog(null, "Sending Successful");
             }else {
@@ -363,22 +355,37 @@ public class Controller implements Initializable{
 
             position_enemy_car_arrived = false;
         }
+
+        progress.setProgress(1);
     }
 
     private boolean sendData(String data){
         try {
+            System.out.println(data);
             URL myurl = new URL(Main.server + "/Micro/upload.php?" + data);
 
             con = (HttpURLConnection) myurl.openConnection();
 
-            con.setRequestMethod("POST");
+            con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", "Java client");
             con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             progress.setProgress(0.6);
-            if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+            if (con.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
                 progress.setProgress(1);
+                JOptionPane.showMessageDialog(null, "Created successfully");
                 con.disconnect();
                 return true;
+            }else if (con.getResponseCode() == HttpURLConnection.HTTP_ACCEPTED){
+                progress.setProgress(1);
+                JOptionPane.showMessageDialog(null, "Updated successfully");
+                con.disconnect();
+                return true;
+            }else if (con.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST){
+                progress.setProgress(0);
+                con.disconnect();
+                JOptionPane.showMessageDialog(null, "Bad Request");
+                return false;
             }else {
                 progress.setProgress(0);
                 con.disconnect();
@@ -451,12 +458,12 @@ public class Controller implements Initializable{
 
         Obj obj = Main.obj;
         obj.setUploadID((String) jsonObject.get("UploadID"));
-        obj.setScore((String) jsonObject.get("Score"));
-        obj.setHeart((String) jsonObject.get("Heart"));
-        obj.setLevel((String) jsonObject.get("Level"));
-        obj.setSpeed((String) jsonObject.get("Speed"));
-        obj.setTurboCharge((String) jsonObject.get("Turbo"));
-        obj.setGameSeconds((String) jsonObject.get("gsec"));
+        obj.setScore(String.valueOf(jsonObject.get("Score")));
+        obj.setHeart(String.valueOf(jsonObject.get("Heart")));
+        obj.setLevel(String.valueOf(jsonObject.get("Level")));
+        obj.setSpeed(String.valueOf(jsonObject.get("Speed")));
+        obj.setTurboCharge(String.valueOf(jsonObject.get("Turbo")));
+        obj.setGameSeconds(String.valueOf(jsonObject.get("gsec")));
 
         String s = (String) jsonObject.get("Time");
         obj.setHr(s.substring(0,2));
@@ -570,13 +577,21 @@ public class Controller implements Initializable{
     private String createSendingFormat(Obj obj){
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("studentID=")
-                .append(obj.getStudentID1())
-                .append("-")
-                .append(obj.getStudentID2())
-                .append("&");
+        if (obj.getStudentID2() != null && !obj.getStudentID2().equals("null") && !obj.getStudentID2().equals("")){
+            stringBuilder.append("studentID=")
+                    .append(obj.getStudentID1())
+                    .append("-")
+                    .append(obj.getStudentID2())
+                    .append("&");
+        }else {
+            stringBuilder.append("studentID=")
+                    .append(obj.getStudentID1())
+                    .append("&");
+        }
 
         /*uploadID*/
+        if (obj.getUploadID() == null)
+            obj.setUploadID(Math.floor(Math.random()) + "");
         stringBuilder.append("uploadID=").append(obj.getUploadID()).append("&");
 
         /*score*/

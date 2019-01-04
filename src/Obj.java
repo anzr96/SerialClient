@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 public class Obj {
@@ -158,5 +160,10 @@ public class Obj {
 
 	public void setGameSeconds(String gameSeconds) {
 		this.gameSeconds = gameSeconds;
+	}
+
+	@Override
+	public String toString() {
+		return new Gson().toJson(this, this.getClass());
 	}
 }
