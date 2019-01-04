@@ -72,7 +72,7 @@ public class Controller implements Initializable{
             date_arrived = false, heart_arrived = false, level_arrived = false,
             position_main_car_arrived = false, position_enemy_car_arrived = false,
             turboCharge_Arrived = false, speed_arrived = false, gameSeconds_arrived = false,
-            load_command = false;
+            load_command = false, upid_arrived = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -98,7 +98,7 @@ public class Controller implements Initializable{
                 date_arrived = false; heart_arrived = false; level_arrived = false;
                 position_main_car_arrived = false; position_enemy_car_arrived = false;
                 turboCharge_Arrived = false; speed_arrived = false; gameSeconds_arrived = false;
-                load_command = false;
+                load_command = false; upid_arrived = false;
             }
 
         }));
@@ -139,10 +139,42 @@ public class Controller implements Initializable{
         textArea.appendText(receivedData + "\n");
 
         /*
+            gettime command
+         */
+        if (receivedData.trim().contains("gettime")){
+            Calendar calendar = Calendar.getInstance();
+            String time = "" + (calendar.get(Calendar.YEAR) + "").substring(2,4)
+                    + ("0" + (calendar.get(Calendar.MONTH) + 1))
+                    + (calendar.get(Calendar.DATE) < 10? "0" + calendar.get(Calendar.DATE): calendar.get(Calendar.DATE) + "")
+                    + (calendar.get(Calendar.HOUR_OF_DAY) < 10? "0" + calendar.get(Calendar.HOUR_OF_DAY): calendar.get(Calendar.HOUR_OF_DAY)  + "")
+                    + (calendar.get(Calendar.MINUTE) < 10? "0" + calendar.get(Calendar.MINUTE): calendar.get(Calendar.MINUTE) + "")
+                    + (calendar.get(Calendar.SECOND) < 10? "0" + calendar.get(Calendar.SECOND): calendar.get(Calendar.SECOND) + "");
+            try {
+                send(time.getBytes());
+            } catch (SerialPortException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Sending Unsuccessful\n" + e.getMessage());
+            }
+            return;
+        }
+
+        /*
+            upid command
+         */
+        if (receivedData.trim().contains("upid")){
+            upid_arrived = true;
+            return;
+        }
+        if (receivedData.length() > 1 && upid_arrived){
+            Main.obj.uploadID = receivedData.trim();
+            upid_arrived = false;
+            return;
+        }
+
+        /*
           save command
          */
         if (receivedData.trim().contains("save")){
-            System.out.println("sss");
             progress.setProgress(0.5);
             //sendData(new Gson().toJson(Main.obj, Obj.class));
             if(sendData(createSendingFormat(Main.obj))){
@@ -425,42 +457,48 @@ public class Controller implements Initializable{
     private void sendSerial(Obj obj) throws SerialPortException {
 
         /*
+            send uploadID
+         */
+        send(("upid").getBytes());
+        send(obj.getUploadID().getBytes());
+
+        /*
           send heart
          */
         send(("heart").getBytes());
-        send((obj.getHeart() + "").getBytes());
+        send((obj.getHeart()).getBytes());
 
         /*
           send level
          */
         send(("level").getBytes());
-        send((obj.getLevel() + "").getBytes());
+        send((obj.getLevel()).getBytes());
         progress.setProgress(0.7);
 
         /*
           send score
          */
         send(("score").getBytes());
-        send((obj.getScore() + "").getBytes());
+        send((obj.getScore()).getBytes());
 
         /*
           send turbo charge
          */
         send(("turbo").getBytes());
-        send((obj.getTurboCharge() + "").getBytes());
+        send((obj.getTurboCharge()).getBytes());
 
         /*
           send speed
          */
         send(("speed").getBytes());
-        send((obj.getSpeed() + "").getBytes());
+        send((obj.getSpeed()).getBytes());
         progress.setProgress(0.8);
 
         /*
           send game second
          */
         send(("gsec").getBytes());
-        send((obj.getGameSeconds() + "").getBytes());
+        send((obj.getGameSeconds()).getBytes());
 
         /*
           send time
@@ -502,11 +540,23 @@ public class Controller implements Initializable{
     private String createSendingFormat(Obj obj){
         StringBuilder stringBuilder = new StringBuilder();
 
+        stringBuilder.append("studentID=")
+                .append(obj.getStudentID1())
+                .append("-")
+                .append(obj.getStudentID2())
+                .append("&");
+
+        /*uploadID*/
+        stringBuilder.append("uploadID=").append(obj.getUploadID()).append("&");
+
         /*score*/
         stringBuilder.append("score=").append(obj.getScore()).append("&");
 
         /*heart*/
         stringBuilder.append("heart=").append(obj.getHeart()).append("&");
+
+        /*level*/
+        stringBuilder.append("level=").append(obj.getLevel()).append("&");
 
         /*time*/
         stringBuilder.append("time=")
