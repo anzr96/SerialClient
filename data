@@ -1,1 +1,1 @@
-{"server":"http://majiid.ir","port":"/dev/ttyUSB0","baud":115200,"data":8,"stop":1,"parity":"None","studentID1":"9312432024","studentID2":"null"}
+{"server":"http://majiid.ir","port":"/dev/ttyUSB0","baud":115200,"data":8,"stop":1,"parity":"None","studentID1":"9312432024","studentID2":"9312432217"}

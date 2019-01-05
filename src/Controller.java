@@ -100,7 +100,11 @@ public class Controller implements Initializable{
     }
 
     private void loadScene(){
-        name.setText(Main.obj.studentID1 + "-" + Main.obj.studentID2);
+        if (Main.obj.studentID2 == null || Main.obj.studentID2.equals("null") || Main.obj.studentID2.equals("")){
+            name.setText(Main.obj.studentID1);
+        }else {
+            name.setText(Main.obj.studentID1 + "-" + Main.obj.studentID2);
+        }
         score.setText(Main.obj.score + "");
         heart.setText(Main.obj.heart + "");
         level.setText(Main.obj.level + "");
@@ -129,7 +133,7 @@ public class Controller implements Initializable{
     }
 
     private void parseBuffer(String receivedData){
-        if (receivedData.length() > 10)
+        if (receivedData.length() > 10 && !position_enemy_car_arrived)
             return;
         textArea.appendText(receivedData + "\n");
 
@@ -344,7 +348,8 @@ public class Controller implements Initializable{
             position_enemy_car_arrived = true;
             return;
         }
-        if (receivedData.length() > 4 && position_enemy_car_arrived){
+        if (position_enemy_car_arrived){
+            receivedData = receivedData.substring(0, receivedData.indexOf('\n'));
             if (receivedData.length() % 4 == 0){
                 for (int i = 0; i < receivedData.length(); i = i + 4){
                     Position position = new Position(receivedData.trim().substring(i, i + 2),
