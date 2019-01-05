@@ -1,5 +1,4 @@
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
+import javafx.animation.Animprovementmport javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -58,6 +57,8 @@ public class Controller implements Initializable{
     private TextArea enemyy;
     @FXML
     private TextArea textArea;
+    @FXML
+    private Label upid;
 
     private static HttpURLConnection con;
 
@@ -113,9 +114,9 @@ public class Controller implements Initializable{
         hour.setText(Main.obj.hr + "");
         minute.setText(Main.obj.min + "");
         second.setText(Main.obj.sec + "");
+        upid.setText(Main.obj.uploadID + "");
         mainx.setText(Main.obj.mainCar.x + "");
         mainy.setText(Main.obj.mainCar.y + "");
-
 
         enemyx.clear();
         enemyy.clear();

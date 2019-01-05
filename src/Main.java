@@ -1,5 +1,3 @@
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -8,15 +6,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import jssc.SerialPort;
 import jssc.SerialPortException;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Calendar;
 import java.util.LinkedList;
 
 public class Main extends Application {
@@ -25,8 +16,6 @@ public class Main extends Application {
     static Obj obj = new Obj();
     static String port = "COM10", server = "localhost";
     static int baud = 115200, stop = 1, data = 8, parity;
-    static String buffer = "";
-    static boolean lockBuff = false;
     static LinkedList<String> bufferList = new LinkedList<>();
     static String sid1, sid2;
 

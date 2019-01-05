@@ -33,15 +33,17 @@
       <Label fx:id="hour" layoutX="68.0" layoutY="241.0" text="NULL" />
       <Label fx:id="minute" layoutX="68.0" layoutY="265.0" text="NULL" />
       <Label fx:id="second" layoutX="70.0" layoutY="289.0" text="NULL" />
-      <Label layoutX="299.0" layoutY="33.0" text="Position Main Car" />
-      <Label layoutX="299.0" layoutY="55.0" text="Position Enemy" />
-      <Label fx:id="mainx" layoutX="425.0" layoutY="33.0" text="NULL" />
-      <Label fx:id="mainy" layoutX="477.0" layoutY="33.0" text="NULL" />
-      <Label layoutX="438.0" layoutY="14.0" text="X" />
-      <Label layoutX="491.0" layoutY="14.0" text="Y" />
+      <Label layoutX="300.0" layoutY="54.0" text="Position Main Car" />
+      <Label layoutX="300.0" layoutY="76.0" text="Position Enemy" />
+      <Label fx:id="mainx" layoutX="426.0" layoutY="54.0" text="NULL" />
+      <Label fx:id="mainy" layoutX="478.0" layoutY="54.0" text="NULL" />
+      <Label layoutX="439.0" layoutY="35.0" text="X" />
+      <Label layoutX="492.0" layoutY="35.0" text="Y" />
       <TextArea fx:id="textArea" layoutX="14.0" layoutY="336.0" prefHeight="137.0" prefWidth="570.0" promptText="Terminal" />
       <Label layoutX="24.0" layoutY="321.0" text="Terminal" />
-      <TextArea fx:id="enemyx" layoutX="418.0" layoutY="56.0" prefHeight="200.0" prefWidth="48.0" />
-      <TextArea fx:id="enemyy" layoutX="475.0" layoutY="56.0" prefHeight="200.0" prefWidth="48.0" />
+      <TextArea fx:id="enemyx" layoutX="419.0" layoutY="77.0" prefHeight="200.0" prefWidth="48.0" />
+      <TextArea fx:id="enemyy" layoutX="476.0" layoutY="77.0" prefHeight="200.0" prefWidth="48.0" />
+      <Label layoutX="324.0" layoutY="14.0" text="Upload ID" />
+      <Label fx:id="upid" layoutX="425.0" layoutY="14.0" text="NULL" />
    </children>
 </Pane>

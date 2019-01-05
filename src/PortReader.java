@@ -3,12 +3,17 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
 public class PortReader implements SerialPortEventListener {
+    private String tempBuffer = "";
 
     @Override
     public void serialEvent(SerialPortEvent serialPortEvent) {
         if (serialPortEvent.isRXCHAR() && serialPortEvent.getEventValue() > 0){
             try {
-                Main.bufferList.addLast(Main.serialPort.readString(serialPortEvent.getEventValue()));
+                tempBuffer += Main.serialPort.readString(serialPortEvent.getEventValue());
+                if (tempBuffer.charAt(tempBuffer.length() - 1) == '\n'){
+                    Main.bufferList.addLast(tempBuffer);
+                    tempBuffer = "";
+                }
             }catch (SerialPortException e){
                 e.printStackTrace();
             }
