@@ -143,7 +143,7 @@ public class Controller implements Initializable{
         if (receivedData.trim().contains("gettime")){
             Calendar calendar = Calendar.getInstance();
             String time = "" + (calendar.get(Calendar.YEAR) + "").substring(2,4)
-                    + ("0" + (calendar.get(Calendar.MONTH) + 1))
+                    + ((calendar.get(Calendar.MONTH) + 1) < 10? "0" + (calendar.get(Calendar.MONTH) + 1): (calendar.get(Calendar.MONTH) + 1) + "")
                     + (calendar.get(Calendar.DATE) < 10? "0" + calendar.get(Calendar.DATE): calendar.get(Calendar.DATE) + "")
                     + (calendar.get(Calendar.HOUR_OF_DAY) < 10? "0" + calendar.get(Calendar.HOUR_OF_DAY): calendar.get(Calendar.HOUR_OF_DAY)  + "")
                     + (calendar.get(Calendar.MINUTE) < 10? "0" + calendar.get(Calendar.MINUTE): calendar.get(Calendar.MINUTE) + "")
