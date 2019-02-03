@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="286.0" prefWidth="608.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Home">
+   <children>
+      <TextField fx:id="port" layoutX="121.0" layoutY="77.0" promptText="COM10" text="COM10" />
+      <TextField fx:id="baud" layoutX="121.0" layoutY="121.0" promptText="115200" text="115200" />
+      <TextField fx:id="stop" layoutX="416.0" layoutY="74.0" promptText="1" text="1" />
+      <TextField fx:id="parity" layoutX="416.0" layoutY="126.0" promptText="None" text="None" />
+      <Label layoutX="53.0" layoutY="82.0" text="Port" />
+      <Label layoutX="33.0" layoutY="126.0" text="Baud Rate" />
+      <Label layoutX="339.0" layoutY="79.0" text="Stop Bits" />
+      <Label layoutX="342.0" layoutY="131.0" text="Parity" />
+      <Button fx:id="submit" layoutX="241.0" layoutY="224.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="127.0" text="Submit" />
+      <TextField fx:id="data" layoutX="416.0" layoutY="29.0" promptText="8" text="8" />
+      <Label layoutX="332.0" layoutY="34.0" text="Data bits" />
+      <TextField fx:id="server" layoutX="121.0" layoutY="31.0" promptText="localhost" text="localhost" />
+      <Label layoutX="16.0" layoutY="36.0" text="Server Address" />
+      <TextField fx:id="sid1" layoutX="121.0" layoutY="170.0" />
+      <TextField fx:id="sid2" layoutX="416.0" layoutY="170.0" />
+      <Label layoutX="25.0" layoutY="175.0" text="Student ID 1" />
+      <Label layoutX="320.0" layoutY="175.0" text="Student ID 2" />
+   </children>
+</Pane>
