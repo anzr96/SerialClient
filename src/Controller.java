@@ -359,6 +359,7 @@ public class Controller implements Initializable {
 			return;
 		}
 		if (position_enemy_car_arrived) {
+			Main.obj.getEnemyCars().clear();
 			receivedData = receivedData.substring(0, receivedData.indexOf('\n'));
 			if (receivedData.length() % 4 == 0) {
 				for (int i = 0; i < receivedData.length(); i = i + 4) {
